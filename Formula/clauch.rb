@@ -1,8 +1,8 @@
 class Clauch < Formula
   desc "Shift Claude models with a USB racing shifter"
   homepage "https://github.com/chapai/claudeshifter"
-  url "https://github.com/chapai/claudeshifter/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "1d40ded62d3e5f09252bcc6407a82ac1cb096226391124f05bba3fe80934e39b"
+  url "https://github.com/chapai/claudeshifter/archive/refs/tags/v0.1.1.tar.gz"
+  sha256 "c456d70c00574118e6594107c09fba4ac3aa752a054c8e8b436c83b5a0dafbce"
   license "WTFPL"
 
   depends_on "elixir" => :build
@@ -22,10 +22,15 @@ class Clauch < Formula
     # Default config, preserved across upgrades (Homebrew keeps user-modified etc files).
     pkgetc.install "config.yaml"
 
-    # Wrapper: default CLAUCH_CONFIG to the etc copy unless the user set their own.
+    # Wrapper: fall back to the etc config only when the app would find none itself
+    # (it searches $CLAUCH_CONFIG, then ./config.yaml, then ~/.config/clauch/config.yaml).
     (bin/"clauch").write <<~SH
       #!/bin/bash
-      export CLAUCH_CONFIG="${CLAUCH_CONFIG:-#{pkgetc}/config.yaml}"
+      if [ -z "$CLAUCH_CONFIG" ] \\
+         && [ ! -f "$PWD/config.yaml" ] \\
+         && [ ! -f "${XDG_CONFIG_HOME:-$HOME/.config}/clauch/config.yaml" ]; then
+        export CLAUCH_CONFIG="#{pkgetc}/config.yaml"
+      fi
       exec "#{libexec}/clauch" "$@"
     SH
   end
