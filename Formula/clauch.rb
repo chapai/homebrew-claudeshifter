@@ -2,7 +2,7 @@ class Clauch < Formula
   desc "Shift Claude models with a USB racing shifter"
   homepage "https://github.com/chapai/claudeshifter"
   url "https://github.com/chapai/claudeshifter/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "REPLACE_WITH_TARBALL_SHA256"
+  sha256 "d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed"
   license "WTFPL"
 
   depends_on "elixir" => :build
