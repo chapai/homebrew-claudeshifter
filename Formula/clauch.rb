@@ -18,10 +18,29 @@ class Clauch < Formula
 
     libexec.install "clauch"
     libexec.install "priv"
-    (bin/"clauch").write_env_script libexec/"clauch", {}
+
+    # Default config, preserved across upgrades (Homebrew keeps user-modified etc files).
+    pkgetc.install "config.yaml"
+
+    # Wrapper: default CLAUCH_CONFIG to the etc copy unless the user set their own.
+    (bin/"clauch").write <<~SH
+      #!/bin/bash
+      export CLAUCH_CONFIG="${CLAUCH_CONFIG:-#{pkgetc}/config.yaml}"
+      exec "#{libexec}/clauch" "$@"
+    SH
+  end
+
+  def caveats
+    <<~EOS
+      A default config was installed to:
+        #{pkgetc}/config.yaml
+      Edit it with your shifter's vendor/product IDs and tmux target.
+      Override the location by setting CLAUCH_CONFIG.
+    EOS
   end
 
   test do
-    assert_match "hid_reader binary not found", shell_output("#{bin}/clauch 2>&1", 1)
+    assert_path_exists etc/"clauch/config.yaml"
+    assert_path_exists libexec/"priv/hid_reader"
   end
 end
