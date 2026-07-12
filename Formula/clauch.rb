@@ -1,8 +1,8 @@
 class Clauch < Formula
   desc "Shift Claude models with a USB racing shifter"
   homepage "https://github.com/chapai/claudeshifter"
-  url "https://github.com/chapai/claudeshifter/archive/refs/tags/v0.1.1.tar.gz"
-  sha256 "c456d70c00574118e6594107c09fba4ac3aa752a054c8e8b436c83b5a0dafbce"
+  url "https://github.com/chapai/claudeshifter/archive/refs/tags/v0.1.2.tar.gz"
+  sha256 "26ccf0cee74e61926531da6ae21b86a3801487869aa13f63c09f30655c98456c"
   license "WTFPL"
 
   depends_on "elixir" => :build
@@ -20,6 +20,7 @@ class Clauch < Formula
     libexec.install "priv"
 
     # Default config, preserved across upgrades (Homebrew keeps user-modified etc files).
+    # The app copies this to ~/.config/clauch/config.yaml on first startup.
     pkgetc.install "config.yaml"
 
     # Wrapper: fall back to the etc config only when the app would find none itself
