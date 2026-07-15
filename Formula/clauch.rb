@@ -1,19 +1,20 @@
 class Clauch < Formula
   desc "Shift Claude models with a USB racing shifter"
   homepage "https://github.com/chapai/claudeshifter"
-  url "https://github.com/chapai/claudeshifter/archive/refs/tags/v0.1.3.tar.gz"
-  sha256 "a0d054ba34fdac5a7b850735110bac1ab2418ad7e6cceb1764732ac8c5fd27cc"
+  url "https://github.com/chapai/claudeshifter/archive/refs/tags/v0.2.0.tar.gz"
+  sha256 "b061cbda1092aa86483f5d56b6cf85ee7a46793ef0e4b3c4273b9c18eee1be77"
   license "WTFPL"
 
   depends_on "elixir" => :build
-  depends_on "pkg-config" => :build
+  depends_on "rust" => :build
   depends_on "erlang"
-  depends_on "hidapi"
 
   def install
     ENV["MIX_ENV"] = "prod"
     system "mix", "deps.get"
-    # elixir_make compiler runs the Makefile, building priv/hid_reader (links hidapi)
+    # elixir_make compiler runs the Makefile, which cargo-builds the
+    # native/hid_reader NIF crate into priv/hid_reader.so (hidapi is vendored
+    # by the crate — no system hidapi needed)
     system "mix", "escript.build"
 
     libexec.install "clauch"
@@ -47,6 +48,6 @@ class Clauch < Formula
 
   test do
     assert_path_exists etc/"clauch/config.yaml"
-    assert_path_exists libexec/"priv/hid_reader"
+    assert_path_exists libexec/"priv/hid_reader.so"
   end
 end
